@@ -13,7 +13,7 @@ pipeline {
                 checkout scm
             }
         }
-        
+        /*
         stage('Build Container') {
             steps {
                 echo 'Building Docker container...'
@@ -23,7 +23,7 @@ pipeline {
                 '''
             }
         }
-        
+        */
         stage('Build Python') {
             steps {
                 echo 'Installing Python dependencies...'
