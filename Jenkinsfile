@@ -17,20 +17,18 @@ pipeline {
         stage('Build Container') {
             steps {
                 echo 'Building Docker container...'
-                script {
-                    sh '''
-                        docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .
-                        docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_IMAGE}:latest
-                    '''
-                }
+                bat '''
+                    docker build -t %DOCKER_IMAGE%:%DOCKER_TAG% .
+                    docker tag %DOCKER_IMAGE%:%DOCKER_TAG% %DOCKER_IMAGE%:latest
+                '''
             }
         }
         
         stage('Build Python') {
             steps {
                 echo 'Installing Python dependencies...'
-                sh '''
-                    python3 -m pip install --user -r requirements.txt
+                bat '''
+                    python -m pip install --user -r requirements.txt
                 '''
             }
         }
@@ -38,15 +36,15 @@ pipeline {
         stage('Run Python Program') {
             steps {
                 echo 'Running the Python application...'
-                sh 'python3 app.py'
+                bat 'python app.py'
             }
         }
         
         stage('Run Unit Tests') {
             steps {
                 echo 'Running unit tests...'
-                sh '''
-                    python3 -m unittest test_app.py -v
+                bat '''
+                    python -m unittest test_app.py -v
                 '''
             }
         }
@@ -69,8 +67,8 @@ pipeline {
         }
         always {
             echo 'Cleaning up...'
-            sh '''
-                docker rmi ${DOCKER_IMAGE}:${DOCKER_TAG} || true
+            bat '''
+                docker rmi %DOCKER_IMAGE%:%DOCKER_TAG% || exit /b 0
             '''
         }
     }
