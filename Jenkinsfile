@@ -3,6 +3,10 @@ pipeline {
         label 'wsl'
     }
 
+    tools {
+        git 'git-linux'
+    }
+
     environment {
         DOCKER_IMAGE = 'cicd-demo-app'
         DOCKER_TAG = "${BUILD_NUMBER}"
