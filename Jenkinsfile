@@ -7,9 +7,7 @@ pipeline {
         PYTHON_PATH = 'C:\\Users\\SPeriyasamy\\AppData\\Local\\Programs\\Python\\Python313\\python.exe'
 
     }
-    tools {
-        python 'Python313'
-    }
+
     stages {
         stage('Get Code') {
             steps {
