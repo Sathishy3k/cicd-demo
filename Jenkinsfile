@@ -19,12 +19,12 @@ pipeline {
         stage('Build Container') {
             steps {
                 echo 'Building Docker container...'
-                /*
+
                 bat '''
                     docker build -t %DOCKER_IMAGE%:%DOCKER_TAG% .
                     docker tag %DOCKER_IMAGE%:%DOCKER_TAG% %DOCKER_IMAGE%:latest
                 '''
-                */
+
             }
         }
 
