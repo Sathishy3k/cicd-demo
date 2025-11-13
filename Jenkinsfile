@@ -4,8 +4,12 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'cicd-demo-app'
         DOCKER_TAG = "${BUILD_NUMBER}"
-    }
+        PYTHON_PATH = 'C:\\Users\\SPeriyasamy\\AppData\\Local\\Programs\\Python\\Python313\\python.exe'
 
+    }
+    tools {
+        python 'Python313'
+    }
     stages {
         stage('Get Code') {
             steps {
@@ -30,7 +34,7 @@ pipeline {
             steps {
                 echo 'Installing Python dependencies...'
                 bat '''
-                    python -m pip install --user -r requirements.txt
+                    "%PYTHON_PATH%" -m pip install --user -r requirements.txt
                 '''
             }
         }
@@ -38,7 +42,7 @@ pipeline {
         stage('Run Python Program') {
             steps {
                 echo 'Running the Python application...'
-                bat 'python app.py'
+                bat '"%PYTHON_PATH%" app.py'
             }
         }
 
@@ -46,7 +50,7 @@ pipeline {
             steps {
                 echo 'Running unit tests...'
                 bat '''
-                    python -m unittest test_app.py -v
+                    "%PYTHON_PATH%" -m unittest test_app.py -v
                 '''
             }
         }
