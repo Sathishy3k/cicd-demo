@@ -1,8 +1,4 @@
 pipeline {
-    /*
-    agent {
-        label 'wsl'
-    }*/
     agent any
 
     environment {
@@ -21,21 +17,20 @@ pipeline {
         stage('Build Container') {
             steps {
                 echo 'Building Docker container...'
-                sh '''
-                    set -e
-                    docker build -t "$DOCKER_IMAGE:$DOCKER_TAG" .
-                    docker tag "$DOCKER_IMAGE:$DOCKER_TAG" "$DOCKER_IMAGE:latest"
+                /*
+                bat '''
+                    docker build -t %DOCKER_IMAGE%:%DOCKER_TAG% .
+                    docker tag %DOCKER_IMAGE%:%DOCKER_TAG% %DOCKER_IMAGE%:latest
                 '''
+                */
             }
         }
 
         stage('Build Python') {
             steps {
                 echo 'Installing Python dependencies...'
-                sh '''
-                    set -e
-                    PY=$(command -v python3 || command -v python)
-                    "$PY" -m pip install --user -r requirements.txt
+                bat '''
+                    python -m pip install --user -r requirements.txt
                 '''
             }
         }
@@ -43,21 +38,15 @@ pipeline {
         stage('Run Python Program') {
             steps {
                 echo 'Running the Python application...'
-                sh '''
-                    set -e
-                    PY=$(command -v python3 || command -v python)
-                    "$PY" app.py
-                '''
+                bat 'python app.py'
             }
         }
 
         stage('Run Unit Tests') {
             steps {
                 echo 'Running unit tests...'
-                sh '''
-                    set -e
-                    PY=$(command -v python3 || command -v python)
-                    "$PY" -m unittest test_app.py -v
+                bat '''
+                    python -m unittest test_app.py -v
                 '''
             }
         }
@@ -80,10 +69,11 @@ pipeline {
         }
         always {
             echo 'Cleaning up...'
-            sh '''
-                set +e
-                docker rmi "$DOCKER_IMAGE:$DOCKER_TAG" || true
+            /*
+            bat '''
+                docker rmi %DOCKER_IMAGE%:%DOCKER_TAG% || exit /b 0
             '''
+            */
         }
     }
 }
