@@ -1,7 +1,9 @@
 pipeline {
+    /*
     agent {
         label 'wsl'
-    }
+    }*/
+    agent any
 
     tools {
         git 'git-linux'
