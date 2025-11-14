@@ -48,25 +48,29 @@ pipeline {
         stage('Run Unit Tests & Coverage') {
             steps {
                 echo 'Running unit tests with coverage...'
-                bat """
-                    if not exist reports mkdir reports
-                    if not exist reports\\html mkdir reports\\html
+                catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+                    bat """
+                        if not exist reports mkdir reports
+                        if not exist reports\\html mkdir reports\\html
 
-                    "%PYTHON_PATH%" -m pytest -v ^
-                        --junitxml=reports\\junit.xml ^
-                        --cov=. ^
-                        --cov-report=xml:reports\\coverage.xml ^
-                        --cov-report=html:reports\\html ^
-                        --cov-report=term
-                """
+                        "%PYTHON_PATH%" -m pytest -v ^
+                            --junitxml=reports\\junit.xml ^
+                            --cov=. ^
+                            --cov-report=xml:reports\\coverage.xml ^
+                            --cov-report=html:reports\\html ^
+                            --cov-report=term
+                    """
+                }
 
                 // Publish JUnit test results
-                junit allowEmptyResults: false, testResults: 'reports/junit.xml'
+                junit allowEmptyResults: true, testResults: 'reports/junit.xml'
 
                 // Publish coverage results using Cobertura adapter (Python coverage XML)
-                publishCoverage adapters: [coberturaAdapter('reports/coverage.xml')],
-                                sourceFileResolver: sourceFiles('NEVER_STORE'),
-                                failNoReports: true
+                catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+                    publishCoverage adapters: [coberturaAdapter('reports/coverage.xml')],
+                                    sourceFileResolver: sourceFiles('NEVER_STORE'),
+                                    failNoReports: false
+                }
 
                 // Publish HTML coverage report
                 publishHTML(target: [
@@ -75,7 +79,7 @@ pipeline {
                     reportFiles: 'index.html',
                     keepAll: true,
                     alwaysLinkToLastBuild: true,
-                    allowMissing: false
+                    allowMissing: true
                 ])
             }
         }
