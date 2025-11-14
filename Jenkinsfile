@@ -55,7 +55,11 @@ pipeline {
                     "%PYTHON_PATH%" -m pytest -v --junitxml=reports\\junit.xml --cov=. --cov-report=xml:reports\\coverage.xml --cov-report=html:reports\\html --cov-report=term
                 '''
                 junit allowEmptyResults: false, testResults: 'reports/junit.xml'
-                cobertura autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'reports/coverage.xml', failNoReports: true, failUnhealthy: false, failUnstable: false, maxNumberOfBuilds: 10, onlyStable: false, sourceEncoding: 'UTF_8'
+                // Replaced deprecated Cobertura publisher with Code Coverage API publishCoverage
+                publishCoverage adapters: [coberturaAdapter('reports/coverage.xml')], sourceFileResolver: sourceFiles('NEVER_STORE'), globalThresholds: [
+                    lineCoverage(threshold: 70, unstableThreshold: 80),
+                    conditionalCoverage(threshold: 50, unstableThreshold: 60)
+                ]
                 publishHTML(target: [
                     reportName: 'Coverage HTML',
                     reportDir: 'reports/html',
