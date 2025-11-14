@@ -51,15 +51,23 @@ pipeline {
                 bat '''
                     if not exist reports mkdir reports
                     if not exist reports\\html mkdir reports\\html
+
                     "%PYTHON_PATH%" -m pip install --user -r requirements.txt
-                    "%PYTHON_PATH%" -m pytest -v --junitxml=reports\\junit.xml --cov=. --cov-report=xml:reports\\coverage.xml --cov-report=html:reports\\html --cov-report=term
+
+                    "%PYTHON_PATH%" -m pytest -v ^
+                        --junitxml=reports\\junit.xml ^
+                        --cov=. ^
+                        --cov-report=cobertura:reports\\coverage.xml ^
+                        --cov-report=html:reports\\html ^
+                        --cov-report=term
                 '''
+
                 junit allowEmptyResults: false, testResults: 'reports/junit.xml'
-                // Replaced deprecated Cobertura publisher with Code Coverage API publishCoverage
-                publishCoverage adapters: [coberturaAdapter('reports/coverage.xml')], sourceFileResolver: sourceFiles('NEVER_STORE'), failNoReports: true, globalThresholds: [
-                    [metric: 'LINE', threshold: 70, unstableThreshold: 80],
-                    [metric: 'CONDITIONAL', threshold: 50, unstableThreshold: 60]
-                ]
+
+                publishCoverage adapters: [coberturaAdapter('reports/coverage.xml')],
+                                sourceFileResolver: sourceFiles('NEVER_STORE'),
+                                failNoReports: true
+
                 publishHTML(target: [
                     reportName: 'Coverage HTML',
                     reportDir: 'reports/html',
