@@ -50,9 +50,9 @@ pipeline {
                 echo 'Running unit tests with coverage...'
                 bat '''
                     if not exist reports mkdir reports
-                    if not exist reports\html mkdir reports\html
+                    if not exist reports\\html mkdir reports\\html
                     "%PYTHON_PATH%" -m pip install --user -r requirements.txt
-                    "%PYTHON_PATH%" -m pytest -v --junitxml=reports\junit.xml --cov=. --cov-report=xml:reports\coverage.xml --cov-report=html:reports\html --cov-report=term
+                    "%PYTHON_PATH%" -m pytest -v --junitxml=reports\\junit.xml --cov=. --cov-report=xml:reports\\coverage.xml --cov-report=html:reports\\html --cov-report=term
                 '''
                 junit allowEmptyResults: false, testResults: 'reports/junit.xml'
                 cobertura autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'reports/coverage.xml', failNoReports: true, failUnhealthy: false, failUnstable: false, maxNumberOfBuilds: 10, onlyStable: false, sourceEncoding: 'UTF_8'
