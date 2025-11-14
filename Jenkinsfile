@@ -57,14 +57,14 @@ pipeline {
                     "%PYTHON_PATH%" -m pytest -v ^
                         --junitxml=reports\\junit.xml ^
                         --cov=. ^
-                        --cov-report=cobertura:reports\\coverage.xml ^
+                        --cov-report=xml:reports\\coverage.xml ^
                         --cov-report=html:reports\\html ^
                         --cov-report=term
                 '''
 
                 junit allowEmptyResults: false, testResults: 'reports/junit.xml'
 
-                publishCoverage adapters: [coberturaAdapter('reports/coverage.xml')],
+                publishCoverage adapters: [jacocoXmlAdapter('reports/coverage.xml')],
                                 sourceFileResolver: sourceFiles('NEVER_STORE'),
                                 failNoReports: true
 
