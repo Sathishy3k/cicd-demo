@@ -56,9 +56,9 @@ pipeline {
                 '''
                 junit allowEmptyResults: false, testResults: 'reports/junit.xml'
                 // Replaced deprecated Cobertura publisher with Code Coverage API publishCoverage
-                publishCoverage adapters: [coberturaAdapter('reports/coverage.xml')], sourceFileResolver: sourceFiles('NEVER_STORE'), globalThresholds: [
-                    lineCoverage(threshold: 70, unstableThreshold: 80),
-                    conditionalCoverage(threshold: 50, unstableThreshold: 60)
+                publishCoverage adapters: [coberturaAdapter('reports/coverage.xml')], sourceFileResolver: sourceFiles('NEVER_STORE'), failNoReports: true, globalThresholds: [
+                    [metric: 'LINE', threshold: 70, unstableThreshold: 80],
+                    [metric: 'CONDITIONAL', threshold: 50, unstableThreshold: 60]
                 ]
                 publishHTML(target: [
                     reportName: 'Coverage HTML',
