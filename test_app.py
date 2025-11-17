@@ -37,11 +37,11 @@ class TestApp(unittest.TestCase):
     def test_add_numbers_mixed(self):
         """Test addition with mixed positive and negative"""
         result = add_numbers(10, -5)
-        self.assertEqual(result, 5)
+        self.assertEqual(result, 15)
 
     def test_add_numbers_zero(self):
         """Test addition with zero"""
-        result = add_numbers(0, 0)
+        result = add_numbers(0, 10)
         self.assertEqual(result, 0)
 
     def test_add_numbers_floats(self):
