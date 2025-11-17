@@ -74,7 +74,7 @@ pipeline {
 
                 // Publish HTML coverage report
                 publishHTML(target: [
-                    reportName: 'Coverage HTML',
+                    reportName: 'Unit test Coverage',
                     reportDir: 'reports/html',
                     reportFiles: 'index.html',
                     keepAll: true,
